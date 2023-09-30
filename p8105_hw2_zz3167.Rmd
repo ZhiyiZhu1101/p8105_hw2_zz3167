@@ -177,19 +177,21 @@ Gwynnda_df =
   mutate(homes_powered = weight_tons*500/30)
 ```
 
+### Add an additional variable to all datasets to keep track
 
+```{r}
+MrTrash_df = mutate(MrTrash_df, track = "Mr Trash wheel")
+ProfessorTrash_df = mutate(ProfessorTrash_df, track = "Professor Trash Wheel")
+Gwynnda_df = mutate(Gwynnda_df, track = "Gwynnda Trash wheel")
+```
 
+### Combine the two dataset with Mr. Trash Wheel and do some adjustment
 
-
-
-
-
-
-
-
-
-
-
+```{r}
+Combine_trash = bind_rows(MrTrash_df, ProfessorTrash_df, Gwynnda_df)
+Combine_trash = relocate(Combine_trash, track, .before = year)
+Combine_trash = relocate(Combine_trash, homes_powered, .after = plastic_bags)
+```
 
 
 
