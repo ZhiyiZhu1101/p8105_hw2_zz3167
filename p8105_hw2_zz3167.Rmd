@@ -140,7 +140,9 @@ merged_df =
 MrTrash_df = 
   read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel", range = "A2:N549")|>
   janitor::clean_names()|>
-  separate(date, into = c("year", "month", "day"), sep = "-")
+  separate(date, into = c("year", "month0", "day"), sep = "-")|>
+  select(-month0)|>
+  relocate(year, .before = month)
 ```
 
 ### Update the data to include a new homes_powered variable
@@ -148,10 +150,46 @@ MrTrash_df =
 ```{r}
 MrTrash_df = 
   mutate(
-    MrTrash_d,
-    homes_powered =  weight_tons * 500 / 30
+    MrTrash_df,
+    homes_powered = weight_tons*500/30
       )
 ```
+
+### Use a similar process to work with Professor Trash Wheel and Gwynnda
+
+```{r}
+ProfessorTrash_df = 
+  read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Professor Trash Wheel", range = "A2:M96")|>
+  janitor::clean_names()|>
+  separate(date, into = c("year", "month0", "day"), sep = "-")|>
+  select(-month0)|>
+  relocate(year, .before = month)|>
+  mutate(homes_powered = weight_tons*500/30)
+```
+
+```{r}
+Gwynnda_df = 
+  read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Gwynnda Trash Wheel", range = "A2:K108")|>
+  janitor::clean_names()|>
+  separate(date, into = c("year", "month0", "day"), sep = "-")|>
+  select(-month0)|>
+  relocate(year, .before = month)|>
+  mutate(homes_powered = weight_tons*500/30)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
