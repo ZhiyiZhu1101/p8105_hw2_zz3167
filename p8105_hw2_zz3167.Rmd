@@ -139,11 +139,19 @@ merged_df =
 ```{r}
 MrTrash_df = 
   read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel", range = "A2:N549")|>
-  janitor::clean_names()
+  janitor::clean_names()|>
+  separate(date, into = c("year", "month", "day"), sep = "-")
 ```
 
+### Update the data to include a new homes_powered variable
 
-
+```{r}
+MrTrash_df = 
+  mutate(
+    MrTrash_d,
+    homes_powered =  weight_tons * 500 / 30
+      )
+```
 
 
 
