@@ -5,7 +5,7 @@ date: "2023-09-29"
 output: github_document
 ---
 
-```{r}
+```{r,message=FALSE}
 library(tidyverse)
 ```
 
@@ -85,7 +85,7 @@ snp_df =
   select(year, month, everything())
 ```
 
-### Clean the unemployment data
+### Clean the the data in unemployment.csv
 
 ```{r}
 unem_df = 
@@ -123,8 +123,12 @@ merged_df =
   left_join(snp_pols_df, unem_df, by = c("year", "month"))
 ```
 
+### Write a short paragraph about these datasets
 
-
+* The dataset `pols_df` has `r nrow(pols_df)` rows(observations) and `r ncol(pols_df)` columns(variables). The range of the year is from January 1947 to June 2015. The key variables are `r names(pols_df)`.
+* The dataset `snp_df` has `r nrow(snp_df)` rows(observations) and `r ncol(snp_df)` columns(variables). The range of years is from January 1950 to July 2015. The key variables are `r names(snp_df)`.
+* The dataset `unem_df` has `r nrow(unem_df)` rows(observations) and `r ncol(unem_df)` columns(variables). The range of years is from January 1948 to June 2015. The key variables are `r names(unem_df)`.
+* The resulting dataset `merged_df` has `r nrow(merged_df)` rows(observations) and `r ncol(merged_df)` columns(variables). The range of years is from January 1947 to June 2015. The names of key variables are `r names(merged_df)`.
 
 
 
