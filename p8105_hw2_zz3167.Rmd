@@ -8,6 +8,7 @@ output: github_document
 ```{r,message=FALSE}
 library(tidyverse)
 library(readxl)
+library(dplyr)
 ```
 
 
@@ -238,10 +239,43 @@ filter_baseline_df = filter(baseline_df, age_at_onset != '.')
 
 * There are `r nrow(baseline_df)` participants, among which `r nrow(filter_baseline_df)` developed MCI. 
 * The average baseline age is `r mean(baseline_df$current_age)`.
-* `r round(nrow(subset(filter_baseline_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(baseline_df, sex == "female"))*100, digits = 2)`% women in the study are APOE4 carrier.
+* `r round(nrow(subset(filter_baseline_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(baseline_df, sex == "female"))*100, digits = 2)`% women in the study are APOE4 carriers.
 
+###  Import, clean, and tidy the dataset of longitudinally observed biomarker values
 
+```{r}
+amyloid_df = 
+  read_csv("data_mci/mci_amyloid.csv", skip = 1) |>
+  janitor::clean_names()|>
+  rename(id = study_id)
+```
 
+### Comment on the steps
+
+* We use read_csv function to import data, then we use skip = 1 function to skip the first row which is the explanation.
+* We use rename function to change the "study_id" to "id" in order to easily combine or compare the two dataset.
+
+### Check whether some participants appear in only the baseline or amyloid datasets
+
+```{r}
+only_baseline = anti_join(filter_baseline_df, amyloid_df, by = "id")
+only_amyloid = anti_join(amyloid_df, filter_baseline_df, by = "id")
+```
+
+<mark> which one? filter_baseline_df / baseline_df ?
+
+* There are `r nrow(only_baseline)` participants only appear in baseline dataset, their ids are `r only_baseline$id`.
+* There are `r nrow(only_amyloid)` participants only appear in amyloid dataset, their ids are `r only_amyloid$id`.
+
+### Combine the demographic and biomarker dataset
+
+```{r}
+combine_df = inner_join(filter_baseline_df, amyloid_df, by = "id")
+```
+
+### Briefly describe the resulting dataset
+
+* There are `r nrow(combine_df)` participants appear in both dataset. `r nrow(subset(combine_df, sex == "male"))` are male, and `r round(nrow(subset(combine_df, sex == "male" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "male"))*100, digits = 2)`% male  are APOE4 carriers. `r nrow(subset(combine_df, sex == "female"))` are female, and `r round(nrow(subset(combine_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "female"))*100, digits = 2)`% female are APOE4 carriers.
 
 
 
