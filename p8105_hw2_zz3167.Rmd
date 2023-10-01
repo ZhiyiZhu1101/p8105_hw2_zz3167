@@ -201,7 +201,47 @@ Combine_trash = relocate(Combine_trash, homes_powered, .after = plastic_bags)
 * The dataset `ProfessorTrash_df` has `r nrow(ProfessorTrash_df)` rows(observations) and `r ncol(ProfessorTrash_df)` columns(variables). The key variables are `r names(ProfessorTrash_df)`.
 * The dataset `Gwynnda_df` has `r nrow(Gwynnda_df)` rows(observations) and `r ncol(Gwynnda_df)` columns(variables). The key variables are `r names(Gwynnda_df)`.
 * The resulting dataset `Combine_trash` has `r nrow(Combine_trash)` rows(observations) and `r ncol(Combine_trash)` columns(variables). The key variables are `r names(Combine_trash)`.
-* The total weight of trash collected by Professor Trash Wheel is `r sum(ProfessorTrash_df$weight_tons)` tons. The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(subset(Gwynnda_df, month == "July" & year == "2021")$cigarette_butts)`. 
+* The total weight of trash collected by Professor Trash Wheel is `r sum(ProfessorTrash_df$weight_tons)` tons. The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(subset(Gwynnda_df, month == "July" & year == "2021", cigarette_butts))`. 
+
+
+## Problem 3
+
+### Import, clean, and tidy the dataset of baseline demographics
+
+```{r}
+baseline_df = 
+  read_csv("data_mci/MCI_baseline.csv", skip = 1) |>
+  janitor::clean_names()|>
+  mutate(
+    sex = case_match(
+      sex,
+      1 ~ "male",
+      0 ~ "female")
+  )|>
+  mutate(
+    apoe4 = case_match(
+      apoe4,
+      1 ~ "APOE4 carrier", 
+      0 ~ "APOE4 non-carrier")
+  )
+
+filter_baseline_df = filter(baseline_df, age_at_onset != '.')
+```
+
+### Discuss important steps in the import process
+
+* We use read_csv function to import data, then we use skip = 1 function to skip the first row cause it's the given notes help us to understand what the numbers in each columns represent.
+* We use mutate function to change the sex and apoe4 values according to the explanation in row 1.
+* We use filter function to remove any participants who do not meet the stated inclusion criteria.
+
+### Discuss relevant features of the dataset
+
+* There are `r nrow(baseline_df)` participants, among which `r nrow(filter_baseline_df)` developed MCI. 
+* The average baseline age is `r mean(baseline_df$current_age)`.
+* `r round(nrow(subset(filter_baseline_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(baseline_df, sex == "female"))*100, digits = 2)`% women in the study are APOE4 carrier.
+
+
+
 
 
 
