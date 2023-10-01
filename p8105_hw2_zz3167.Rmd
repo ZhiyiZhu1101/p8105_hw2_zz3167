@@ -277,6 +277,11 @@ combine_df = inner_join(filter_baseline_df, amyloid_df, by = "id")
 
 * There are `r nrow(combine_df)` participants appear in both dataset. `r nrow(subset(combine_df, sex == "male"))` are male, and `r round(nrow(subset(combine_df, sex == "male" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "male"))*100, digits = 2)`% male  are APOE4 carriers. `r nrow(subset(combine_df, sex == "female"))` are female, and `r round(nrow(subset(combine_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "female"))*100, digits = 2)`% female are APOE4 carriers.
 
+### Export combined dataset as CSV 
+
+```{r}
+write_csv(combine_df, "data_mci/combine_dataset.csv")
+```
 
 
 
