@@ -193,6 +193,20 @@ Combine_trash = relocate(Combine_trash, track, .before = year)
 Combine_trash = relocate(Combine_trash, homes_powered, .after = plastic_bags)
 ```
 
+<mark> dumpster has more than one start
+
+### Write a paragraph about these data
+
+* The dataset `MrTrash_df` has `r nrow(MrTrash_df)` rows(observations) and `r ncol(MrTrash_df)` columns(variables). The key variables are `r names(MrTrash_df)`.
+* The dataset `ProfessorTrash_df` has `r nrow(ProfessorTrash_df)` rows(observations) and `r ncol(ProfessorTrash_df)` columns(variables). The key variables are `r names(ProfessorTrash_df)`.
+* The dataset `Gwynnda_df` has `r nrow(Gwynnda_df)` rows(observations) and `r ncol(Gwynnda_df)` columns(variables). The key variables are `r names(Gwynnda_df)`.
+* The resulting dataset `Combine_trash` has `r nrow(Combine_trash)` rows(observations) and `r ncol(Combine_trash)` columns(variables). The key variables are `r names(Combine_trash)`.
+* The total weight of trash collected by Professor Trash Wheel is `r sum(ProfessorTrash_df$weight_tons)` tons. The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(subset(Gwynnda_df, month == "July" & year == "2021")$cigarette_butts)`. 
+
+
+
+
+
 
 
 
