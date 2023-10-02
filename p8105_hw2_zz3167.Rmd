@@ -189,9 +189,10 @@ Gwynnda_df = mutate(Gwynnda_df, track = "Gwynnda Trash wheel")
 ### Combine the two dataset with Mr. Trash Wheel and do some adjustment
 
 ```{r}
-Combine_trash = bind_rows(MrTrash_df, ProfessorTrash_df, Gwynnda_df)
-Combine_trash = relocate(Combine_trash, track, .before = year)
-Combine_trash = relocate(Combine_trash, homes_powered, .after = plastic_bags)
+Combine_trash = 
+  bind_rows(MrTrash_df, ProfessorTrash_df, Gwynnda_df)|>
+  relocate(track, .before = year)|>
+  relocate(homes_powered, .after = plastic_bags)
 ```
 
 <mark> dumpster has more than one start
@@ -225,8 +226,8 @@ baseline_df =
       1 ~ "APOE4 carrier", 
       0 ~ "APOE4 non-carrier")
   )
-
-filter_baseline_df = filter(baseline_df, age_at_onset != '.')
+  
+standard_baseline_df = filter(baseline_df, age_at_onset > current_age | age_at_onset == '.')
 ```
 
 ### Discuss important steps in the import process
@@ -237,9 +238,10 @@ filter_baseline_df = filter(baseline_df, age_at_onset != '.')
 
 ### Discuss relevant features of the dataset
 
-* There are `r nrow(baseline_df)` participants, among which `r nrow(filter_baseline_df)` developed MCI. 
-* The average baseline age is `r mean(baseline_df$current_age)`.
-* `r round(nrow(subset(filter_baseline_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(baseline_df, sex == "female"))*100, digits = 2)`% women in the study are APOE4 carriers.
+* Of the initial `r nrow(baseline_df)` participants enrolled, `r nrow(standard_baseline_df)` met the required inclusion criteria, but `r nrow(baseline_df)-nrow(standard_baseline_df)` had MCI prior to recruitment and did not meet the recruitment criteria.
+* Among participants who meet the criteria, `r nrow(subset(standard_baseline_df, age_at_onset != '.')) ` developed MCI.
+* The average baseline age is `r mean(standard_baseline_df$current_age)`.
+* `r round(nrow(subset(standard_baseline_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(standard_baseline_df, sex == "female"))*100, digits = 2)`% women in the study are APOE4 carriers.
 
 ###  Import, clean, and tidy the dataset of longitudinally observed biomarker values
 
@@ -255,14 +257,18 @@ amyloid_df =
 * We use read_csv function to import data, then we use skip = 1 function to skip the first row which is the explanation.
 * We use rename function to change the "study_id" to "id" in order to easily combine or compare the two dataset.
 
+### Discuss relevant features of the dataset
+
+* There are `r nrow(amyloid_df)` rows(observations) and `r ncol(amyloid_df)` columns(variables) in the dataset `amyloid_df`. The names of variables are: `r names(amyloid_df)`.
+
 ### Check whether some participants appear in only the baseline or amyloid datasets
 
 ```{r}
-only_baseline = anti_join(filter_baseline_df, amyloid_df, by = "id")
-only_amyloid = anti_join(amyloid_df, filter_baseline_df, by = "id")
+only_baseline = anti_join(standard_baseline_df, amyloid_df, by = "id")
+only_amyloid = anti_join(amyloid_df, standard_baseline_df, by = "id")
 ```
 
-<mark> which one? filter_baseline_df / baseline_df ?
+<mark> which one? standard_baseline_df / baseline_df ?
 
 * There are `r nrow(only_baseline)` participants only appear in baseline dataset, their ids are `r only_baseline$id`.
 * There are `r nrow(only_amyloid)` participants only appear in amyloid dataset, their ids are `r only_amyloid$id`.
@@ -270,12 +276,12 @@ only_amyloid = anti_join(amyloid_df, filter_baseline_df, by = "id")
 ### Combine the demographic and biomarker dataset
 
 ```{r}
-combine_df = inner_join(filter_baseline_df, amyloid_df, by = "id")
+combine_df = inner_join(standard_baseline_df, amyloid_df, by = "id")
 ```
 
 ### Briefly describe the resulting dataset
 
-* There are `r nrow(combine_df)` participants appear in both dataset. `r nrow(subset(combine_df, sex == "male"))` are male, and `r round(nrow(subset(combine_df, sex == "male" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "male"))*100, digits = 2)`% male  are APOE4 carriers. `r nrow(subset(combine_df, sex == "female"))` are female, and `r round(nrow(subset(combine_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "female"))*100, digits = 2)`% female are APOE4 carriers.
+* There are `r nrow(combine_df)` participants appear in both dataset. `r nrow(subset(combine_df, sex == "male"))` of them are male, and `r round(nrow(subset(combine_df, sex == "male" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "male"))*100, digits = 2)`% male  are APOE4 carriers. `r nrow(subset(combine_df, sex == "female"))` of them are female, and `r round(nrow(subset(combine_df, sex == "female" & apoe4 == "APOE4 carrier"))/nrow(subset(combine_df, sex == "female"))*100, digits = 2)`% female are APOE4 carriers.
 
 ### Export combined dataset as CSV 
 
