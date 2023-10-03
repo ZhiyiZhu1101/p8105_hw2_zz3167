@@ -16,7 +16,7 @@ library(dplyr)
 
 ### Clean the data in pols-month.csv
 
-```{r}
+```{r, message = FALSE}
 pols_df = 
   read_csv("data/pols-month.csv") |>
   janitor::clean_names() |>
@@ -52,7 +52,7 @@ pols_df =
 
 ### Clean the data in snp.csv
 
-```{r}
+```{r, message = FALSE}
 snp_df = 
   read_csv("data/snp.csv") |>
   janitor::clean_names() |>
@@ -89,7 +89,7 @@ snp_df =
 
 ### Clean the the data in unemployment.csv
 
-```{r}
+```{r, message = FALSE}
 unem_df = 
   read_csv("data/unemployment.csv") |>
   janitor::clean_names() |>
@@ -139,7 +139,7 @@ merged_df =
 
 ```{r}
 MrTrash_df = 
-  read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel", range = "A2:N549")|>
+  read_excel("data/202309 Trash Wheel Collection Data.xlsx",sheet = "Mr. Trash Wheel", range = "A2:N586")|>
   janitor::clean_names()|>
   separate(date, into = c("year", "month0", "day"), sep = "-")|>
   select(-month0)|>
@@ -160,7 +160,7 @@ MrTrash_df =
 
 ```{r}
 ProfessorTrash_df = 
-  read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Professor Trash Wheel", range = "A2:M96")|>
+  read_excel("data/202309 Trash Wheel Collection Data.xlsx",sheet = "Professor Trash Wheel", range = "A2:M108")|>
   janitor::clean_names()|>
   separate(date, into = c("year", "month0", "day"), sep = "-")|>
   select(-month0)|>
@@ -170,7 +170,7 @@ ProfessorTrash_df =
 
 ```{r}
 Gwynnda_df = 
-  read_excel("data/202207 Trash Wheel Collection Data.xlsx",sheet = "Gwynnda Trash Wheel", range = "A2:K108")|>
+  read_excel("data/202309 Trash Wheel Collection Data.xlsx",sheet = "Gwynnda Trash Wheel", range = "A2:L157")|>
   janitor::clean_names()|>
   separate(date, into = c("year", "month0", "day"), sep = "-")|>
   select(-month0)|>
@@ -195,7 +195,6 @@ Combine_trash =
   relocate(homes_powered, .after = plastic_bags)
 ```
 
-<mark> dumpster has more than one start
 
 ### Write a paragraph about these data
 
@@ -210,7 +209,7 @@ Combine_trash =
 
 ### Import, clean, and tidy the dataset of baseline demographics
 
-```{r}
+```{r, message = FALSE}
 baseline_df = 
   read_csv("data_mci/MCI_baseline.csv", skip = 1) |>
   janitor::clean_names()|>
@@ -245,7 +244,7 @@ standard_baseline_df = filter(baseline_df, age_at_onset > current_age | age_at_o
 
 ###  Import, clean, and tidy the dataset of longitudinally observed biomarker values
 
-```{r}
+```{r, message = FALSE}
 amyloid_df = 
   read_csv("data_mci/mci_amyloid.csv", skip = 1) |>
   janitor::clean_names()|>
@@ -268,7 +267,6 @@ only_baseline = anti_join(standard_baseline_df, amyloid_df, by = "id")
 only_amyloid = anti_join(amyloid_df, standard_baseline_df, by = "id")
 ```
 
-<mark> which one? standard_baseline_df / baseline_df ?
 
 * There are `r nrow(only_baseline)` participants only appear in baseline dataset, their ids are `r only_baseline$id`.
 * There are `r nrow(only_amyloid)` participants only appear in amyloid dataset, their ids are `r only_amyloid$id`.
