@@ -271,7 +271,7 @@ amyloid_df =
 
 ### Discuss relevant features of the dataset
 
-* There are `r nrow(amyloid_df)/5` observations (each id has 5 rows) and `r ncol(amyloid_df)` variables in the dataset `amyloid_df`. The names of variables are: `r names(amyloid_df)`.
+* There are `r nrow(amyloid_df)/5` participants with `r nrow(amyloid_df)` observations (each id has 5 rows) and `r ncol(amyloid_df)` variables in the dataset `amyloid_df`. The names of variables are: `r names(amyloid_df)`.
 
 ### Check whether some participants appear in only the baseline or amyloid datasets
 
